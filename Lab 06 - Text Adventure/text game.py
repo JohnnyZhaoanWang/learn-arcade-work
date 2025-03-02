@@ -1,4 +1,4 @@
-                # A text adventure game
+               # A text adventure game
 class Room:
     """
     this class represents the rooms in the playing area
@@ -21,27 +21,26 @@ def main():
 
     # this code populates the room info
     room_list = []
-    names = ['Dining Room', 'Hall', 'Lounge', 'Library', 'Store', 'Kitchen']
+    names = ['Entrance Hall', 'Bedroom', 'Dining Room', 'Living Room', 'Library', 'Kitchen']
     descriptions = [
-        'You are in a grand but faded dining room. Cobwebs cover the table and chairs.There are doors to the north '
-        'and to the east.',
         'You are in a large marble floored entrance hall with hunting trophies adorning the walls. There is a grand '
         'staircase leading to the upper floor and doors to the east and the west.',
-        'You are in the smoking lounge. There are tatty sofas and chairs and a sideboard with half empty drink '
-        'bottles. There are doors to the north and the west',
+        'You are in a bedroom. It is dark. You can faintly see a door to the west and the east ',
+        'You are in a grand but faded dining room. Cobwebs cover the table and chairs.There are doors to the north '
+        'and to the west.',
+        'You are in the living room. There are tatty sofas and chairs and a sideboard with half empty drink '
+        'bottles. There are doors to the east and the south',
         'You are in the library. In the dim light you can see scores of dust covered bookshelves. There are doors to '
-        'the south and the west.',
-        'You are in a store room. It is dark. You can faintly see a door to the west and ramshackle stairs going down '
-        'to the basement.',
+        'the east and the west.',
         'You are in the kitchen. There is an old cauldron in the centre and cooking utensils scattered about. There '
         'are doors to the south and the east.'
     ]
-    norths = [5, None, 3, None, None, None]
-    easts = [1, 2, None, None, 3, 4]
-    souths = [None, None, None, 2, None, 0]
-    wests = [None, 0, 1, 4, 5, None]
-    ups = [None, None, None, None, None, None]
-    downs = [None, None, None, None, None, None]
+    norths = [3,None,5,None,None,None]
+    easts = [1,2,None,4,5,None]
+    souths = [None,None,None,0,None,2]
+    wests = [1,2,None,4,5,None]
+    ups = [None,None,None,None,None,None]
+    downs = [None,None,None,None,None,None]
     for i in range(len(names)):
         room = Room(names[i], descriptions[i], norths[i], easts[i], souths[i], wests[i], ups[i], downs[i])
         room_list.append(room)
