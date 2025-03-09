@@ -43,7 +43,7 @@ class Ball:
             self.change_y *= -1
 
 
-class MyGame(arcade.Window):
+class   MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
 
