@@ -21,14 +21,14 @@ SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 
 # Shooting Constants
-SPRITE_SCALING_LASER = 0.8
-SHOOT_SPEED = 15
-BULLET_SPEED = 12
+SPRITE_SCALING_LASER = 20
+SHOOT_SPEED = 1
+BULLET_SPEED = 40
 BULLET_DAMAGE = 25
 
 # Movement speed of player, in pixels per frame
 PLAYER_MOVEMENT_SPEED = 7
-GRAVITY = 1.5
+GRAVITY = 0.5
 PLAYER_JUMP_SPEED = 30
 
 # How many pixels to keep as a minimum margin between the character

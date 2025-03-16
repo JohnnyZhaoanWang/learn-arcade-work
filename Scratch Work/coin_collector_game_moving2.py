@@ -10,7 +10,7 @@ import arcade
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.2
-COIN_COUNT = 50
+COIN_COUNT = 7000
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -32,7 +32,7 @@ class Coin(arcade.Sprite):
     def update(self):
 
         # Move the coin
-        self.center_y -= 1
+        self.center_y -= 600
 
         # See if the coin has fallen off the bottom of the screen.
         # If so, reset it.
