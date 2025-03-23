@@ -1,5 +1,18 @@
+"""
+Sprite Bullets
+
+Simple program to show basic sprite usage.
+
+Artwork from https://kenney.nl
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sprite_bullets_aimed
+"""
+
 import random
 import arcade
+import math
+import os
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.2
@@ -8,8 +21,11 @@ COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+SCREEN_TITLE = "Sprites and Bullets Aimed Example"
 
 BULLET_SPEED = 5
+
+window = None
 
 
 class MyGame(arcade.Window):
@@ -18,7 +34,14 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites and Bullets Demo")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+        # Set the working directory (where we expect to find files) to the same
+        # directory this .py file is in. You can leave this out of your own
+        # code, but it is needed to easily run the examples using "python -m"
+        # as mentioned at the top of this program.
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -28,9 +51,11 @@ class MyGame(arcade.Window):
         # Set up the player info
         self.player_sprite = None
         self.score = 0
+        self.score_text = None
 
-        # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        # Load sounds. Sounds from kenney.nl
+        self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser1.wav")
+        self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -47,7 +72,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/male_person/malePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
+                                           "femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -70,9 +96,7 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
+        """ Render the screen. """
 
         # This command has to happen before we start drawing
         self.clear()
@@ -82,30 +106,44 @@ class MyGame(arcade.Window):
         self.bullet_list.draw()
         self.player_list.draw()
 
-        # Render the text
-        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
-
-    def on_mouse_motion(self, x, y, dx, dy):
-        """
-        Called whenever the mouse moves.
-        """
-        self.player_sprite.center_x = x
+        # Put the text on the screen.
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """
-        Called whenever the mouse button is clicked.
-        """
+        """ Called whenever the mouse button is clicked. """
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png ", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
 
-        # The image points to the right, and we want it to point up. So
-        # rotate it.
-        bullet.angle = 90
+        # Position the bullet at the player's current location
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y
+        bullet.center_x = start_x
+        bullet.center_y = start_y
 
-        # Position the bullet
-        bullet.center_x = self.player_sprite.center_x
-        bullet.bottom = self.player_sprite.top
+        # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrolling screen, you will also need
+        # to add in self.view_bottom and self.view_left.
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+
+        # Angle the bullet sprite so it doesn't look like it is flying
+        # sideways.
+        bullet.angle = math.degrees(angle)
+        print(f"Bullet angle: {bullet.angle:.2f}")
+
+        # Taking into account the angle, calculate our change_x
+        # and change_y. Velocity is how fast the bullet travels.
+        bullet.change_x = math.cos(angle) * BULLET_SPEED
+        bullet.change_y = math.sin(angle) * BULLET_SPEED
 
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
@@ -114,7 +152,6 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
 
         # Call update on all sprites
-        self.coin_list.update()
         self.bullet_list.update()
 
         # Loop through each bullet
@@ -133,13 +170,13 @@ class MyGame(arcade.Window):
                 self.score += 1
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
 
 
 def main():
-    window = MyGame()
-    window.setup()
+    game = MyGame()
+    game.setup()
     arcade.run()
 
 
